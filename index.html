@@ -1,1 +1,105 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="BlinkNow Leadership Development Program HRM Session Final Assessment"><title>HRM Session Final Assessment</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="assessment.css?v=4"></head><body><main class="page-container"><section id="quiz-screen" class="quiz-card"><header class="quiz-header"><div><p id="section-label" class="eyebrow">HRM Session Assessment</p><h1 id="quiz-title">HRM Session Final Assessment</h1></div><div class="question-counter"><span id="current-question-number">1</span> / <span id="total-question-count">45</span></div></header><div class="progress-track" role="progressbar" aria-label="Assessment progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-bar" class="progress-bar"></div></div><div class="question-area"><details id="question-context" class="question-context" hidden><summary id="context-title" class="context-title"></summary><p id="context-text" class="context-text"></p></details><h2 id="question-text" class="question-text">Loading question...</h2><div id="answer-options" class="answer-options" aria-label="Answer choices"></div><div id="feedback" class="feedback" aria-live="polite" hidden></div></div><div class="quiz-actions"><button id="next-button" class="primary-button" type="button" disabled>Next Question</button></div></section><section id="completion-screen" class="completion-card" hidden><div class="completion-icon" aria-hidden="true">✓</div><p class="eyebrow">Assessment Complete</p><h1>HRM Sessions Completed</h1><p class="completion-description">Enter your full name below to generate your certificate of completion.</p><form id="certificate-form" class="name-form"><label for="participant-name">Full Name</label><input id="participant-name" name="participant-name" type="text" autocomplete="name" maxlength="100" placeholder="Enter your full name" required><button class="primary-button" type="submit">Generate Certificate</button></form></section><section id="certificate-screen" hidden><div id="certificate" class="certificate" aria-label="Certificate of Completion"><div class="certificate-border"><div class="certificate-content"><div class="certificate-logo">BNF</div><p class="certificate-organization">BlinkNow Leadership Development Program · 2026</p><h1 class="certificate-heading">Certificate of Completion</h1><p class="certificate-intro">This certifies that</p><div id="certificate-name" class="certificate-name">Participant Name</div><p class="certificate-copy">has successfully completed</p><h2 id="certificate-course-title" class="certificate-course">BNF LDP HRM Sessions</h2><div class="certificate-details"><div><span class="detail-label">Completion Date</span><strong id="certificate-date"></strong></div><div><span class="detail-label">Completion</span><strong id="certificate-score">45 of 45 Questions Completed</strong></div></div><p class="certificate-footer">Certificate generated after successful completion of the HRM session assessment.</p></div></div></div><div class="certificate-actions"><p>Screenshot the certificate above or save it as a PDF.</p><button id="print-certificate-button" class="primary-button" type="button">Print / Save as PDF</button></div></section></main><script src="questions-1.js?v=4"></script><script src="questions-2.js?v=4"></script><script src="questions-3.js?v=4"></script><script src="case-studies.js?v=4"></script><script src="app-state.js?v=4"></script><script src="app-display.js?v=4"></script><script src="app-compat.js?v=4"></script><script src="app-answer.js?v=4"></script><script src="app-finish.js?v=4"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="BlinkNow Leadership Development Program HRM Session Final Assessment">
+  <title>HRM Session Final Assessment</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assessment.css?v=6">
+</head>
+<body>
+  <main class="page-container">
+    <section id="quiz-screen" class="quiz-card">
+      <header class="quiz-header">
+        <div>
+          <p id="section-label" class="eyebrow">HRM Session Assessment</p>
+          <h1 id="quiz-title">HRM Session Final Assessment</h1>
+        </div>
+        <div class="question-counter">
+          <span id="current-question-number">1</span> / <span id="total-question-count">45</span>
+        </div>
+      </header>
+
+      <div class="progress-track" role="progressbar" aria-label="Assessment progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+
+      <div class="question-area">
+        <details id="question-context" class="question-context" hidden>
+          <summary id="context-title" class="context-title"></summary>
+          <p id="context-text" class="context-text"></p>
+        </details>
+
+        <h2 id="question-text" class="question-text">Loading question...</h2>
+
+        <div id="answer-options" class="answer-options" aria-label="Answer choices"></div>
+        <div id="feedback" class="feedback" aria-live="polite" hidden></div>
+      </div>
+
+      <div class="quiz-actions">
+        <button id="next-button" class="primary-button" type="button" disabled>Next Question</button>
+      </div>
+    </section>
+
+    <section id="completion-screen" class="completion-card" hidden>
+      <div class="completion-icon" aria-hidden="true">✓</div>
+      <p class="eyebrow">Assessment Complete</p>
+      <h1>HRM Sessions Completed</h1>
+      <p class="completion-description">Enter your full name below to generate your certificate of completion.</p>
+      <form id="certificate-form" class="name-form">
+        <label for="participant-name">Full Name</label>
+        <input id="participant-name" name="participant-name" type="text" autocomplete="name" maxlength="100" placeholder="Enter your full name" required>
+        <button class="primary-button" type="submit">Generate Certificate</button>
+      </form>
+    </section>
+
+    <section id="certificate-screen" hidden>
+      <div id="certificate" class="certificate certificate-hrm" aria-label="Certificate of Completion">
+        <div class="certificate-border">
+          <div class="certificate-content">
+            <div class="certificate-brand-lockup" aria-label="BlinkNow">
+              <svg class="certificate-brand-mark" viewBox="0 0 86 118" aria-hidden="true">
+                <path d="M43 3 61 21 43 39 25 21Z" fill="#ed174c" stroke="#ffffff" stroke-width="3"/>
+                <path d="M22 23C4 42 2 67 16 87c7 10 16 18 27 25V42Z" fill="#41b6e6" stroke="#ffffff" stroke-width="3"/>
+                <path d="M45 42v70c12-7 22-16 29-28 12-21 8-45-11-64Z" fill="#f15a24" stroke="#ffffff" stroke-width="3"/>
+                <path d="M43 65 20 43c-7 14-7 31 2 45 5 9 12 16 21 22Z" fill="#4eb36b" stroke="#ffffff" stroke-width="3"/>
+              </svg>
+              <span>BlinkNow<sup>®</sup></span>
+            </div>
+            <h1 class="certificate-heading">Certificate of Completion</h1>
+            <div class="certificate-divider" aria-hidden="true">
+              <span></span>
+            </div>
+            <p class="certificate-intro">This certificate is proudly presented to :</p>
+            <div id="certificate-name" class="certificate-name">Participant Name</div>
+            <p class="certificate-copy">For the successful completion of the</p>
+            <h2 id="certificate-course-title" class="certificate-course">HRM Session Completion – Final Assessment</h2>
+            <p class="certificate-program-copy">under the BlinkNow Leadership Development Program – 2026.</p>
+            <div class="certificate-meta">
+              <p id="certificate-date"></p>
+              <p id="certificate-score">45 of 45 Questions Completed</p>
+            </div>
+            <p class="certificate-footer">BlinkNow Leadership Development Program · 2026</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="certificate-actions">
+        <p>Screenshot the certificate above or save it as a PDF.</p>
+        <button id="print-certificate-button" class="primary-button" type="button">Print / Save as PDF</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="questions-1.js?v=6"></script>
+  <script src="questions-2.js?v=6"></script>
+  <script src="questions-3.js?v=6"></script>
+  <script src="case-studies.js?v=6"></script>
+  <script src="app-state.js?v=6"></script>
+  <script src="app-display.js?v=6"></script>
+  <script src="app-compat.js?v=6"></script>
+  <script src="app-answer.js?v=6"></script>
+  <script src="app-finish.js?v=6"></script>
+</body>
+</html>
