@@ -1,11 +1,11 @@
-function checkAnswer(selectedButton,selectedAnswerIndex){
+function checkAnswer(selectedButton,selectedOriginalIndex){
   if(currentQuestionAnsweredCorrectly)return;
 
   const question=questions[currentQuestionIndex];
   const buttons=answerOptions.querySelectorAll(".answer-button");
   buttons.forEach(button=>button.classList.remove("incorrect"));
 
-  if(selectedAnswerIndex===question.correctAnswer){
+  if(selectedOriginalIndex===question.correctAnswer){
     currentQuestionAnsweredCorrectly=true;
     selectedButton.classList.add("correct");
     feedback.textContent="Correct. You can continue.";
