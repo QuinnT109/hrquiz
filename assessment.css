@@ -50,7 +50,8 @@
   width: 100%;
   height: 100%;
   padding: clamp(10px, 1.4vw, 18px);
-  border: 3px solid #315b8a;
+  border: 0;
+  box-shadow: inset 0 0 0 3px #315b8a;
 }
 
 .certificate-hrm .certificate-content {
@@ -63,7 +64,8 @@
   gap: clamp(5px, 0.75vw, 10px);
   overflow: hidden;
   padding: clamp(18px, 3vw, 38px) clamp(28px, 5vw, 72px);
-  border: 1px solid rgba(49, 91, 138, 0.28);
+  border: 0;
+  box-shadow: inset 0 0 0 1px rgba(49, 91, 138, 0.28);
   text-align: center;
 }
 
@@ -216,7 +218,7 @@
 
   .certificate-hrm .certificate-border {
     padding: 6px;
-    border-width: 2px;
+    box-shadow: inset 0 0 0 2px #315b8a;
   }
 
   .certificate-hrm .certificate-content {
@@ -275,14 +277,123 @@
   }
 }
 
+@page {
+  size: 11in 8.5in;
+  margin: 0.45in;
+}
+
 @media print {
+  html,
+  body {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page-container {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
   #certificate-screen {
-    width: 100%;
-    margin: 0;
-    transform: none;
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    transform: none !important;
+    visibility: visible !important;
   }
 
   #certificate.certificate-hrm {
-    box-shadow: none;
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    aspect-ratio: 1.414 / 1 !important;
+    margin: 0 auto !important;
+    padding: 0.14in !important;
+    overflow: hidden !important;
+    border: 1pt solid #315b8a !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  #certificate .certificate-border {
+    padding: 0.11in !important;
+    border: 0 !important;
+    box-shadow: inset 0 0 0 2.2pt #315b8a !important;
+  }
+
+  #certificate .certificate-content {
+    gap: 4pt !important;
+    padding: 0.18in 0.42in !important;
+    border: 0 !important;
+    box-shadow: inset 0 0 0 0.65pt rgba(49, 91, 138, 0.32) !important;
+  }
+
+  #certificate .certificate-brand-lockup {
+    gap: 7pt !important;
+    margin-bottom: 1pt !important;
+    font-size: 22pt !important;
+  }
+
+  #certificate .certificate-brand-mark {
+    width: 34pt !important;
+  }
+
+  #certificate .certificate-heading {
+    font-size: 29pt !important;
+    letter-spacing: 0.025em !important;
+    white-space: nowrap !important;
+  }
+
+  #certificate .certificate-ornament {
+    width: 82% !important;
+    gap: 9pt !important;
+  }
+
+  #certificate .ornament-symbol {
+    font-size: 9pt !important;
+  }
+
+  #certificate .certificate-intro {
+    font-size: 10.5pt !important;
+  }
+
+  #certificate .certificate-name {
+    max-width: 92% !important;
+    font-size: 38pt !important;
+  }
+
+  #certificate .certificate-copy {
+    font-size: 9.5pt !important;
+  }
+
+  #certificate .certificate-course {
+    max-width: 94% !important;
+    font-size: 19pt !important;
+  }
+
+  #certificate .certificate-program-copy {
+    font-size: 8.5pt !important;
+  }
+
+  #certificate .certificate-meta {
+    gap: 7pt !important;
+    margin-top: 2pt !important;
+    font-size: 8pt !important;
+  }
+
+  .certificate-actions {
+    display: none !important;
   }
 }
