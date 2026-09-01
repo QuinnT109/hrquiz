@@ -1,817 +1,414 @@
-/* =========================
-   BASE
-========================= */
+/* =========================================================
+   QUIZ QUESTIONS
 
-* {
-  box-sizing: border-box;
+   Replace this array with the real questions later.
+
+   correctAnswer is the zero-based position:
+   0 = first answer
+   1 = second answer
+   2 = third answer
+   3 = fourth answer
+========================================================= */
+
+const questions = [
+  {
+    question: "What color is a typical banana when ripe?",
+    answers: [
+      "Blue",
+      "Yellow",
+      "Purple",
+      "Invisible"
+    ],
+    correctAnswer: 1
+  },
+
+  {
+    question: "How many legs does a normal dog have?",
+    answers: [
+      "2",
+      "4",
+      "7",
+      "Approximately 38"
+    ],
+    correctAnswer: 1
+  },
+
+  {
+    question: "Which of these is used to drink water?",
+    answers: [
+      "A cup",
+      "A keyboard",
+      "A bicycle tire",
+      "A brick"
+    ],
+    correctAnswer: 0
+  },
+
+  {
+    question: "What planet do humans live on?",
+    answers: [
+      "Mars",
+      "Jupiter",
+      "Earth",
+      "The Sun"
+    ],
+    correctAnswer: 2
+  },
+
+  {
+    question: "What is 2 + 2?",
+    answers: [
+      "3",
+      "4",
+      "22",
+      "Fish"
+    ],
+    correctAnswer: 1
+  }
+];
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentQuestionIndex = 0;
+let currentQuestionAnsweredCorrectly = false;
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const quizScreen = document.getElementById("quiz-screen");
+const completionScreen = document.getElementById("completion-screen");
+const certificateScreen = document.getElementById("certificate-screen");
+
+const questionText = document.getElementById("question-text");
+const answerOptions = document.getElementById("answer-options");
+
+const currentQuestionNumber =
+  document.getElementById("current-question-number");
+
+const totalQuestionCount =
+  document.getElementById("total-question-count");
+
+const progressBar =
+  document.getElementById("progress-bar");
+
+const progressTrack =
+  document.querySelector(".progress-track");
+
+const feedback =
+  document.getElementById("feedback");
+
+const nextButton =
+  document.getElementById("next-button");
+
+const certificateForm =
+  document.getElementById("certificate-form");
+
+const participantName =
+  document.getElementById("participant-name");
+
+const certificateName =
+  document.getElementById("certificate-name");
+
+const certificateDate =
+  document.getElementById("certificate-date");
+
+const certificateScore =
+  document.getElementById("certificate-score");
+
+const printCertificateButton =
+  document.getElementById("print-certificate-button");
+
+
+/* =========================================================
+   INITIALIZE QUIZ
+========================================================= */
+
+function initializeQuiz() {
+  totalQuestionCount.textContent = questions.length;
+
+  // Update the completion screen so the 5-question test
+  // doesn't still say "50 questions."
+  const completionDescription =
+    document.querySelector(".completion-description");
+
+  if (completionDescription) {
+    completionDescription.textContent =
+      `You completed all ${questions.length} questions. ` +
+      `Enter your full name below to generate your certificate of completion.`;
+  }
+
+  certificateScore.textContent =
+    `${questions.length} of ${questions.length} Questions`;
+
+  showQuestion();
 }
 
-html {
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    Helvetica,
-    Arial,
-    sans-serif;
-}
 
-body {
-  margin: 0;
-  min-height: 100vh;
+/* =========================================================
+   DISPLAY QUESTION
+========================================================= */
 
-  background: #f4f6f8;
-  color: #1c2733;
-}
+function showQuestion() {
+  currentQuestionAnsweredCorrectly = false;
 
-button,
-input {
-  font: inherit;
-}
+  const question = questions[currentQuestionIndex];
 
-button {
-  cursor: pointer;
-}
+  currentQuestionNumber.textContent =
+    currentQuestionIndex + 1;
 
-[hidden] {
-  display: none !important;
-}
+  questionText.textContent =
+    question.question;
 
+  answerOptions.innerHTML = "";
 
-/* =========================
-   PAGE
-========================= */
+  feedback.hidden = true;
+  feedback.textContent = "";
+  feedback.className = "feedback";
 
-.page-container {
-  width: min(760px, calc(100% - 32px));
-  margin: 0 auto;
-  padding: 56px 0;
-}
+  nextButton.disabled = true;
 
+  if (currentQuestionIndex === questions.length - 1) {
+    nextButton.textContent = "Finish Quiz";
+  } else {
+    nextButton.textContent = "Next Question";
+  }
 
-/* =========================
-   CARDS
-========================= */
+  question.answers.forEach((answer, answerIndex) => {
+    const button = document.createElement("button");
 
-.quiz-card,
-.completion-card {
-  background: #ffffff;
+    button.type = "button";
+    button.className = "answer-button";
 
-  border: 1px solid #dfe4e8;
-  border-radius: 18px;
+    const letter =
+      String.fromCharCode(65 + answerIndex);
 
-  padding: 32px;
+    button.innerHTML = `
+      <span class="answer-letter">${letter}</span>
+      <span class="answer-label"></span>
+    `;
 
-  box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.04),
-    0 14px 40px rgba(0, 0, 0, 0.05);
+    // Using textContent here means question text can't
+    // accidentally inject HTML into the page.
+    button.querySelector(".answer-label").textContent = answer;
+
+    button.addEventListener("click", () => {
+      checkAnswer(button, answerIndex);
+    });
+
+    answerOptions.appendChild(button);
+  });
+
+  updateProgress();
 }
 
 
-/* =========================
-   TYPOGRAPHY
-========================= */
+/* =========================================================
+   CHECK ANSWER
+========================================================= */
 
-.eyebrow {
-  margin: 0 0 5px;
+function checkAnswer(selectedButton, selectedAnswerIndex) {
+  // Once correct, don't allow the question state to change.
+  if (currentQuestionAnsweredCorrectly) {
+    return;
+  }
 
-  color: #687684;
+  const question = questions[currentQuestionIndex];
 
-  font-size: 0.78rem;
-  font-weight: 700;
+  const buttons =
+    answerOptions.querySelectorAll(".answer-button");
 
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  // Remove previous incorrect selection styling.
+  buttons.forEach((button) => {
+    button.classList.remove("selected", "incorrect");
+  });
+
+  selectedButton.classList.add("selected");
+
+  if (selectedAnswerIndex === question.correctAnswer) {
+
+    /* -------------------------
+       CORRECT
+    ------------------------- */
+
+    currentQuestionAnsweredCorrectly = true;
+
+    selectedButton.classList.remove("selected");
+    selectedButton.classList.add("correct");
+
+    feedback.textContent = "Correct.";
+    feedback.className = "feedback correct-feedback";
+    feedback.hidden = false;
+
+    nextButton.disabled = false;
+
+    // Lock answers after getting it correct.
+    buttons.forEach((button) => {
+      button.disabled = true;
+    });
+
+  } else {
+
+    /* -------------------------
+       INCORRECT
+    ------------------------- */
+
+    selectedButton.classList.add("incorrect");
+
+    feedback.textContent = "Incorrect. Try again.";
+    feedback.className = "feedback incorrect-feedback";
+    feedback.hidden = false;
+
+    nextButton.disabled = true;
+  }
 }
 
-h1,
-h2,
-p {
-  margin-top: 0;
-}
 
-.quiz-header h1 {
-  margin-bottom: 0;
+/* =========================================================
+   NEXT QUESTION
+========================================================= */
 
-  font-size: 1.65rem;
-  line-height: 1.25;
-}
+function goToNextQuestion() {
+  if (!currentQuestionAnsweredCorrectly) {
+    return;
+  }
 
+  if (currentQuestionIndex < questions.length - 1) {
+    currentQuestionIndex++;
 
-/* =========================
-   QUIZ HEADER
-========================= */
+    showQuestion();
 
-.quiz-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
 
-  gap: 24px;
-}
-
-.question-counter {
-  flex: 0 0 auto;
-
-  background: #eef2f5;
-
-  border-radius: 999px;
-
-  padding: 8px 13px;
-
-  color: #4d5b67;
-
-  font-size: 0.9rem;
-  font-weight: 700;
+  } else {
+    finishQuiz();
+  }
 }
 
 
-/* =========================
+/* =========================================================
    PROGRESS
-========================= */
+========================================================= */
 
-.progress-track {
-  width: 100%;
-  height: 8px;
+function updateProgress() {
+  // Progress represents questions already completed.
+  const completedQuestions =
+    currentQuestionIndex;
 
-  margin: 26px 0 34px;
+  const percentage =
+    (completedQuestions / questions.length) * 100;
 
-  overflow: hidden;
+  progressBar.style.width =
+    `${percentage}%`;
 
-  background: #e9edf0;
-  border-radius: 999px;
-}
-
-.progress-bar {
-  width: 0%;
-  height: 100%;
-
-  background: #1d6f5f;
-  border-radius: inherit;
-
-  transition: width 200ms ease;
+  progressTrack.setAttribute(
+    "aria-valuenow",
+    Math.round(percentage)
+  );
 }
 
 
-/* =========================
-   QUESTION
-========================= */
+/* =========================================================
+   FINISH QUIZ
+========================================================= */
 
-.question-area {
-  min-height: 300px;
-}
+function finishQuiz() {
+  progressBar.style.width = "100%";
 
-.question-text {
-  margin-bottom: 24px;
+  progressTrack.setAttribute(
+    "aria-valuenow",
+    "100"
+  );
 
-  font-size: 1.32rem;
-  line-height: 1.45;
-}
+  quizScreen.hidden = true;
+  completionScreen.hidden = false;
 
-.answer-options {
-  display: grid;
+  participantName.focus();
 
-  gap: 12px;
-}
-
-
-/* =========================
-   ANSWER BUTTONS
-========================= */
-
-.answer-button {
-  width: 100%;
-
-  display: flex;
-  align-items: center;
-
-  gap: 14px;
-
-  padding: 16px 18px;
-
-  text-align: left;
-
-  color: #1c2733;
-  background: #ffffff;
-
-  border: 2px solid #d8dee3;
-  border-radius: 12px;
-
-  transition:
-    border-color 120ms ease,
-    background-color 120ms ease,
-    transform 80ms ease;
-}
-
-.answer-button:hover {
-  border-color: #98a5af;
-  background: #fafbfc;
-}
-
-.answer-button:active {
-  transform: scale(0.995);
-}
-
-.answer-button:focus-visible,
-.primary-button:focus-visible,
-input:focus-visible {
-  outline: 3px solid rgba(29, 111, 95, 0.25);
-  outline-offset: 2px;
-}
-
-.answer-letter {
-  flex: 0 0 auto;
-
-  display: grid;
-  place-items: center;
-
-  width: 34px;
-  height: 34px;
-
-  background: #eef2f5;
-  border-radius: 8px;
-
-  font-weight: 700;
-}
-
-.answer-label {
-  flex: 1;
-
-  line-height: 1.4;
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 }
 
 
-/* Selected answer */
-
-.answer-button.selected {
-  border-color: #1d6f5f;
-  background: #f2f8f6;
-}
-
-
-/* Correct answer */
-
-.answer-button.correct {
-  border-color: #218558;
-  background: #edf8f2;
-}
-
-.answer-button.correct .answer-letter {
-  color: #ffffff;
-  background: #218558;
-}
-
-
-/* Incorrect answer */
-
-.answer-button.incorrect {
-  border-color: #c74a4a;
-  background: #fff3f3;
-}
-
-.answer-button.incorrect .answer-letter {
-  color: #ffffff;
-  background: #c74a4a;
-}
-
-
-/* =========================
-   FEEDBACK
-========================= */
-
-.feedback {
-  margin-top: 18px;
-
-  padding: 14px 16px;
-
-  border-radius: 10px;
-
-  font-weight: 650;
-  line-height: 1.45;
-}
-
-.feedback.correct-feedback {
-  color: #14583b;
-  background: #edf8f2;
-  border: 1px solid #b9dfcc;
-}
-
-.feedback.incorrect-feedback {
-  color: #8a2929;
-  background: #fff2f2;
-  border: 1px solid #edc2c2;
-}
-
-
-/* =========================
-   QUIZ ACTIONS
-========================= */
-
-.quiz-actions {
-  display: flex;
-  justify-content: flex-end;
-
-  margin-top: 28px;
-
-  padding-top: 22px;
-
-  border-top: 1px solid #e6eaed;
-}
-
-.primary-button {
-  min-height: 46px;
-
-  padding: 12px 20px;
-
-  color: #ffffff;
-  background: #1d6f5f;
-
-  border: none;
-  border-radius: 10px;
-
-  font-weight: 700;
-
-  transition:
-    background-color 120ms ease,
-    opacity 120ms ease;
-}
-
-.primary-button:hover:not(:disabled) {
-  background: #165b4e;
-}
-
-.primary-button:disabled {
-  cursor: not-allowed;
-
-  opacity: 0.42;
-}
-
-
-/* =========================
-   COMPLETION
-========================= */
-
-.completion-card {
-  max-width: 620px;
-
-  margin: 0 auto;
-
-  text-align: center;
-}
-
-.completion-icon {
-  display: grid;
-  place-items: center;
-
-  width: 64px;
-  height: 64px;
-
-  margin: 0 auto 22px;
-
-  color: #ffffff;
-  background: #218558;
-
-  border-radius: 50%;
-
-  font-size: 2rem;
-  font-weight: 800;
-}
-
-.completion-card h1 {
-  margin-bottom: 12px;
-
-  font-size: 2rem;
-}
-
-.completion-description {
-  max-width: 500px;
-
-  margin: 0 auto 28px;
-
-  color: #61707d;
-
-  line-height: 1.6;
-}
-
-
-/* =========================
-   NAME FORM
-========================= */
-
-.name-form {
-  display: grid;
-
-  max-width: 420px;
-
-  margin: 0 auto;
-
-  gap: 12px;
-
-  text-align: left;
-}
-
-.name-form label {
-  font-size: 0.9rem;
-  font-weight: 700;
-}
-
-.name-form input {
-  width: 100%;
-  height: 50px;
-
-  padding: 0 14px;
-
-  color: #17212a;
-  background: #ffffff;
-
-  border: 2px solid #d5dce1;
-  border-radius: 10px;
-
-  font-size: 1rem;
-}
-
-.name-form input:focus {
-  border-color: #1d6f5f;
-}
-
-.name-form .primary-button {
-  width: 100%;
-
-  margin-top: 6px;
-}
-
-
-/* =========================
-   CERTIFICATE
-========================= */
-
-#certificate-screen {
-  width: 100%;
-}
-
-.certificate {
-  width: 100%;
-
-  aspect-ratio: 1.414 / 1;
-
-  background:
-    linear-gradient(
-      135deg,
-      #ffffff 0%,
-      #fafbf9 50%,
-      #ffffff 100%
-    );
-
-  border: 1px solid #d6d9d4;
-
-  padding: 18px;
-
-  box-shadow:
-    0 3px 8px rgba(0, 0, 0, 0.06),
-    0 20px 50px rgba(0, 0, 0, 0.08);
-}
-
-.certificate-border {
-  width: 100%;
-  height: 100%;
-
-  display: grid;
-  place-items: center;
-
-  border: 3px solid #1d6f5f;
-
-  padding: 10px;
-}
-
-.certificate-content {
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid #bcc8c3;
-
-  padding: 32px 42px;
-
-  text-align: center;
-}
-
-.certificate-logo {
-  display: grid;
-  place-items: center;
-
-  width: 52px;
-  height: 52px;
-
-  margin-bottom: 10px;
-
-  color: #ffffff;
-  background: #1d6f5f;
-
-  border-radius: 50%;
-
-  font-weight: 800;
-  letter-spacing: 0.04em;
-}
-
-.certificate-organization {
-  margin-bottom: 22px;
-
-  color: #52615d;
-
-  font-size: 0.78rem;
-  font-weight: 800;
-
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-
-.certificate-heading {
-  margin-bottom: 20px;
-
-  color: #172b27;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 500;
-}
-
-.certificate-intro,
-.certificate-copy {
-  margin-bottom: 10px;
-
-  color: #66736f;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size: 1rem;
-  font-style: italic;
-}
-
-.certificate-name {
-  min-width: 62%;
-
-  margin-bottom: 14px;
-
-  padding: 4px 20px 9px;
-
-  color: #1d6f5f;
-
-  border-bottom: 1px solid #a7b3ae;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size: clamp(1.8rem, 5vw, 2.8rem);
-  font-weight: 600;
-}
-
-.certificate-course {
-  margin: 5px 0 28px;
-
-  color: #21322e;
-
-  font-size: clamp(1.2rem, 3vw, 1.65rem);
-}
-
-.certificate-details {
-  width: min(480px, 100%);
-
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-
-  gap: 30px;
-
-  margin-top: 4px;
-}
-
-.certificate-details > div {
-  display: flex;
-  flex-direction: column;
-
-  gap: 5px;
-}
-
-.detail-label {
-  color: #78847f;
-
-  font-size: 0.72rem;
-  font-weight: 800;
-
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.certificate-details strong {
-  color: #263833;
-
-  font-size: 0.95rem;
-}
-
-.certificate-footer {
-  margin: 26px 0 0;
-
-  color: #82908b;
-
-  font-size: 0.7rem;
-}
-
-
-/* =========================
-   CERTIFICATE CONTROLS
-========================= */
-
-.certificate-actions {
-  margin-top: 26px;
-
-  text-align: center;
-}
-
-.certificate-actions p {
-  margin-bottom: 14px;
-
-  color: #687684;
-
-  font-size: 0.9rem;
-}
-
-
-/* =========================
-   MOBILE
-========================= */
-
-@media (max-width: 600px) {
-
-  .page-container {
-    width: min(100% - 20px, 760px);
-
-    padding: 20px 0;
+/* =========================================================
+   GENERATE CERTIFICATE
+========================================================= */
+
+function generateCertificate(event) {
+  event.preventDefault();
+
+  const name =
+    participantName.value.trim();
+
+  if (!name) {
+    participantName.focus();
+    return;
   }
 
-  .quiz-card,
-  .completion-card {
-    padding: 22px 18px;
+  certificateName.textContent = name;
 
-    border-radius: 14px;
-  }
+  const today = new Date();
 
-  .quiz-header {
-    gap: 12px;
-  }
+  certificateDate.textContent =
+    today.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
 
-  .quiz-header h1 {
-    font-size: 1.3rem;
-  }
+  certificateScore.textContent =
+    `${questions.length} of ${questions.length} Questions`;
 
-  .question-area {
-    min-height: unset;
-  }
+  completionScreen.hidden = true;
+  certificateScreen.hidden = false;
 
-  .question-text {
-    font-size: 1.15rem;
-  }
-
-  .answer-button {
-    padding: 14px;
-  }
-
-  .quiz-actions .primary-button {
-    width: 100%;
-  }
-
-
-  /* Certificate remains landscape,
-     but scales to phone width */
-
-  .certificate {
-    padding: 7px;
-  }
-
-  .certificate-border {
-    padding: 5px;
-
-    border-width: 2px;
-  }
-
-  .certificate-content {
-    padding: 12px 16px;
-  }
-
-  .certificate-logo {
-    width: 34px;
-    height: 34px;
-
-    margin-bottom: 5px;
-
-    font-size: 0.72rem;
-  }
-
-  .certificate-organization {
-    margin-bottom: 8px;
-
-    font-size: 0.52rem;
-  }
-
-  .certificate-heading {
-    margin-bottom: 9px;
-
-    font-size: clamp(1.25rem, 7vw, 2rem);
-  }
-
-  .certificate-intro,
-  .certificate-copy {
-    margin-bottom: 4px;
-
-    font-size: 0.65rem;
-  }
-
-  .certificate-name {
-    margin-bottom: 6px;
-
-    padding-bottom: 4px;
-
-    font-size: clamp(1.1rem, 7vw, 1.8rem);
-  }
-
-  .certificate-course {
-    margin: 3px 0 10px;
-
-    font-size: clamp(0.8rem, 4vw, 1.1rem);
-  }
-
-  .certificate-details {
-    gap: 12px;
-  }
-
-  .detail-label {
-    font-size: 0.45rem;
-  }
-
-  .certificate-details strong {
-    font-size: 0.58rem;
-  }
-
-  .certificate-footer {
-    margin-top: 10px;
-
-    font-size: 0.42rem;
-  }
-
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 }
 
 
-/* =========================
-   PRINT / SAVE AS PDF
-========================= */
+/* =========================================================
+   PRINT / SAVE PDF
+========================================================= */
 
-@media print {
-
-  @page {
-    size: landscape;
-    margin: 0;
-  }
-
-  body {
-    background: #ffffff;
-  }
-
-  body * {
-    visibility: hidden;
-  }
-
-  #certificate,
-  #certificate * {
-    visibility: visible;
-  }
-
-  #certificate {
-    position: absolute;
-
-    left: 0;
-    top: 0;
-
-    width: 100%;
-
-    border: none;
-    box-shadow: none;
-  }
-
-  .certificate-actions {
-    display: none;
-  }
-
+function printCertificate() {
+  window.print();
 }
+
+
+/* =========================================================
+   EVENT LISTENERS
+========================================================= */
+
+nextButton.addEventListener(
+  "click",
+  goToNextQuestion
+);
+
+certificateForm.addEventListener(
+  "submit",
+  generateCertificate
+);
+
+printCertificateButton.addEventListener(
+  "click",
+  printCertificate
+);
+
+
+/* =========================================================
+   START
+========================================================= */
+
+initializeQuiz();
