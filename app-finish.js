@@ -19,6 +19,12 @@ function goToNextQuestion(){
 }
 
 function beginPendingSection(){
+  if(assessmentIntroActive){
+    assessmentIntroActive=false;
+    showSectionIntro(questions[0].section,0,true);
+    return;
+  }
+
   if(pendingQuestionIndex===null)return;
 
   currentQuestionIndex=pendingQuestionIndex;
@@ -34,6 +40,7 @@ function updateProgress(){
 }
 
 function finishQuiz(){
+  assessmentIntroActive=false;
   progressBar.style.width="100%";
   progressTrack.setAttribute("aria-valuenow","100");
   quizScreen.hidden=true;
