@@ -1,0 +1,156 @@
+/* Certificate refinements requested for the final HRM assessment release. */
+
+.certificate-hrm .certificate-content {
+  position: relative;
+  isolation: isolate;
+  grid-template-rows: auto auto auto auto auto auto auto auto;
+  gap: clamp(5px, 0.7vw, 10px);
+}
+
+.certificate-hrm .certificate-content > *:not(.certificate-watermark) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Uses the official logo image, but clips the wordmark so only the bud appears. */
+.certificate-watermark {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: 50%;
+  width: 42%;
+  height: 80%;
+  overflow: hidden;
+  opacity: 0.035;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.certificate-watermark img {
+  position: absolute;
+  left: 5%;
+  top: 0;
+  width: auto;
+  max-width: none;
+  height: 100%;
+}
+
+.certificate-brand-logo {
+  width: clamp(150px, 22vw, 240px);
+  max-width: 38%;
+  margin: 0 auto 4px;
+}
+
+.certificate-program-title {
+  margin-bottom: clamp(5px, 0.8vw, 10px);
+}
+
+.certificate-hrm .certificate-intro {
+  margin-top: 2px;
+}
+
+.certificate-hrm .certificate-name {
+  margin: 4px 0 8px;
+}
+
+.certificate-hrm .certificate-copy {
+  max-width: 84%;
+  margin: 8px 0 12px;
+  font-size: clamp(0.88rem, 1.65vw, 1.12rem);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.certificate-meta {
+  margin-top: clamp(4px, 0.65vw, 8px);
+}
+
+@media (max-width: 700px) {
+  .certificate-watermark {
+    width: 42%;
+    height: 80%;
+  }
+
+  .certificate-brand-logo {
+    width: clamp(92px, 25vw, 145px);
+    max-width: 34%;
+    margin-bottom: 1px;
+  }
+
+  .certificate-program-title {
+    margin-bottom: 2px;
+  }
+
+  .certificate-hrm .certificate-name {
+    margin: 1px 0 3px;
+  }
+
+  .certificate-hrm .certificate-copy {
+    max-width: 88%;
+    margin: 2px 0 4px;
+    font-size: clamp(0.46rem, 2.2vw, 0.7rem);
+  }
+}
+
+@media print {
+  #certificate .certificate-content {
+    position: relative !important;
+    isolation: isolate !important;
+    gap: 3.5pt !important;
+  }
+
+  #certificate .certificate-content > *:not(.certificate-watermark) {
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  #certificate .certificate-watermark {
+    position: absolute !important;
+    z-index: 0 !important;
+    left: 50% !important;
+    top: 50% !important;
+    width: 42% !important;
+    height: 80% !important;
+    overflow: hidden !important;
+    opacity: 0.035 !important;
+    transform: translate(-50%, -50%) !important;
+    display: block !important;
+  }
+
+  #certificate .certificate-watermark img {
+    position: absolute !important;
+    left: 5% !important;
+    top: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    height: 100% !important;
+  }
+
+  #certificate .certificate-brand-logo {
+    width: 135pt !important;
+    max-width: 32% !important;
+    margin: 0 auto 2pt !important;
+  }
+
+  #certificate .certificate-program-title {
+    margin-bottom: 4pt !important;
+  }
+
+  #certificate .certificate-name {
+    margin: 2pt 0 5pt !important;
+  }
+
+  #certificate .certificate-copy {
+    max-width: 84% !important;
+    margin: 5pt 0 8pt !important;
+    font-size: 10pt !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+  }
+
+  #certificate .certificate-meta {
+    margin-top: 3pt !important;
+  }
+}
