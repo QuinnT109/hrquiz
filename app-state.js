@@ -1,10 +1,12 @@
 const questions=window.HRM_QUESTIONS||[];
 const caseStudies=window.HRM_CASE_STUDIES||{};
+const assessmentIntro=window.HRM_ASSESSMENT_INTRO||[];
 const sectionDescriptions=window.HRM_SECTION_DESCRIPTIONS||{};
 const sectionOrder=[...new Set(questions.map(question=>question.section))];
 let currentQuestionIndex=0;
 let currentQuestionAnsweredCorrectly=false;
 let pendingQuestionIndex=null;
+let assessmentIntroActive=false;
 
 const quizScreen=document.getElementById("quiz-screen");
 const sectionScreen=document.getElementById("section-screen");
