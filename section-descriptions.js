@@ -2,7 +2,7 @@ window.HRM_ASSESSMENT_INTRO=Object.freeze([
   "We have covered the four HRM sessions. The questions below deliberately test understanding, application, managerial judgment, and case analysis based on the learning from the HRM sessions.",
   "The source material emphasizes structured performance management, evidence-based hiring, onboarding as a journey, respectful offboarding, managers as the first HR, policy/process gap identification, compliance planning, employee surveys and HR analytics.",
   "This assessment consists of 45 multiple-choice questions, including practical scenario- and case-based questions designed to assess your understanding and application of key HR and people-management concepts.",
-  "Take your time, read each question carefully, and select the answer that best reflects your understanding and professional judgment. Good luck!"
+  "Take your time, read each question carefully, and select the answer that best reflects your understanding and professional judgment. You will have two opportunities to select the correct answer for each question. If your second choice is incorrect, you will not have another opportunity to answer and will need to move on to the next question."
 ]);
 
 window.HRM_SECTION_DESCRIPTIONS=Object.freeze({
