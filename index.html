@@ -6,8 +6,8 @@
   <meta name="description" content="BlinkNow Leadership Development Program HRM Session Final Assessment">
   <title>HRM Session Final Assessment</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="assessment.css?v=11">
-  <link rel="stylesheet" href="section-intro.css?v=11">
+  <link rel="stylesheet" href="assessment.css?v=12">
+  <link rel="stylesheet" href="section-intro.css?v=12">
 </head>
 <body>
   <main class="page-container">
@@ -69,6 +69,11 @@
       <form id="certificate-form" class="name-form" hidden>
         <label for="participant-name">Full Name</label>
         <input id="participant-name" name="participant-name" type="text" autocomplete="name" maxlength="100" placeholder="Enter your full name" required>
+
+        <label for="participant-email">Email Address</label>
+        <input id="participant-email" name="participant-email" type="email" autocomplete="email" maxlength="254" placeholder="Enter your approved email address" required>
+        <div id="certificate-access-error" class="feedback incorrect-feedback" role="alert" hidden></div>
+
         <div class="result-form-actions">
           <button id="participation-restart-button" class="secondary-button" type="button" hidden>Restart Assessment</button>
           <button id="certificate-submit-button" class="primary-button" type="submit">View Certificate</button>
@@ -84,11 +89,7 @@
       <div id="certificate" class="certificate certificate-hrm" aria-label="Certificate of Completion">
         <div class="certificate-border">
           <div class="certificate-content">
-            <img
-              class="certificate-brand-logo"
-              src="data:image/png;base64,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"
-              alt="BlinkNow"
-            >
+            <img class="certificate-brand-logo" src="assets/blinknow-logo.png?v=12" alt="BlinkNow">
             <p class="certificate-program-title">BlinkNow Leadership Development Program</p>
 
             <h1 id="certificate-heading" class="certificate-heading">Certificate of Completion</h1>
@@ -122,15 +123,16 @@
     </section>
   </main>
 
-  <script src="questions-1.js?v=11"></script>
-  <script src="questions-2.js?v=11"></script>
-  <script src="questions-3.js?v=11"></script>
-  <script src="case-studies.js?v=11"></script>
-  <script src="section-descriptions.js?v=11"></script>
-  <script src="app-state.js?v=11"></script>
-  <script src="app-display.js?v=11"></script>
-  <script src="app-compat.js?v=11"></script>
-  <script src="app-answer.js?v=11"></script>
-  <script src="app-finish.js?v=11"></script>
+  <script src="questions-1.js?v=12"></script>
+  <script src="questions-2.js?v=12"></script>
+  <script src="questions-3.js?v=12"></script>
+  <script src="case-studies.js?v=12"></script>
+  <script src="section-descriptions.js?v=12"></script>
+  <script src="email-whitelist.js?v=12"></script>
+  <script src="app-state.js?v=12"></script>
+  <script src="app-display.js?v=12"></script>
+  <script src="app-compat.js?v=12"></script>
+  <script src="app-answer.js?v=12"></script>
+  <script src="app-finish.js?v=12"></script>
 </body>
 </html>

@@ -68,13 +68,16 @@ function showResultScreen(){
   participationRestartButton.hidden=true;
   restartPanel.hidden=true;
   participantName.value="";
+  participantEmail.value="";
+  certificateAccessError.hidden=true;
+  certificateAccessError.textContent="";
 
   if(currentCertificateOutcome==="completion"){
     completionIcon.textContent="✓";
     completionIcon.classList.remove("retry-icon");
     resultEyebrow.textContent="Assessment Complete";
     resultTitle.textContent="Successful Completion";
-    resultSummary.textContent="You achieved the 80% successful completion standard. Enter your full name to view and print your Certificate of Completion.";
+    resultSummary.textContent="You achieved the 80% successful completion standard. Enter your full name and approved email address to view and print your Certificate of Completion.";
     certificateSubmitButton.textContent="View Completion Certificate";
     certificateForm.hidden=false;
     participantName.focus();
@@ -83,7 +86,7 @@ function showResultScreen(){
     completionIcon.classList.remove("retry-icon");
     resultEyebrow.textContent="Assessment Complete";
     resultTitle.textContent="Successful Participation";
-    resultSummary.textContent="A score of 80% or higher awards a Certificate of Successful Completion. You may restart the quiz and attempt to get a higher score, or enter your full name to view and print your Certificate of Successful Participation.";
+    resultSummary.textContent="A score of 80% or higher awards a Certificate of Successful Completion. You may restart the quiz and attempt to get a higher score, or enter your full name and approved email address to view and print your Certificate of Successful Participation.";
     certificateSubmitButton.textContent="View Participation Certificate";
     participationRestartButton.hidden=false;
     certificateForm.hidden=false;
@@ -134,16 +137,57 @@ function renderCertificate(name,outcome,scorePercentage=null){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function generateCertificate(event){
+function normalizeEmail(email){
+  return email.trim().toLowerCase();
+}
+
+async function sha256Hex(value){
+  const encoded=new TextEncoder().encode(value);
+  const digest=await crypto.subtle.digest("SHA-256",encoded);
+  return Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,"0")).join("");
+}
+
+async function isWhitelistedEmail(email){
+  if(!window.isSecureContext||!crypto.subtle)return false;
+  if(!Array.isArray(allowedEmailHashes)||allowedEmailHashes.length===0)return false;
+  const emailHash=await sha256Hex(normalizeEmail(email));
+  return allowedEmailHashes.includes(emailHash);
+}
+
+async function generateCertificate(event){
   event.preventDefault();
+  certificateAccessError.hidden=true;
+  certificateAccessError.textContent="";
+
+  if(!certificateForm.reportValidity())return;
+
   const name=participantName.value.trim();
+  const email=normalizeEmail(participantEmail.value);
+  const defaultButtonText=currentCertificateOutcome==="completion"
+    ?"View Completion Certificate"
+    :"View Participation Certificate";
 
-  if(!name){
-    participantName.focus();
-    return;
+  certificateSubmitButton.disabled=true;
+  certificateSubmitButton.textContent="Checking access…";
+
+  try{
+    const allowed=await isWhitelistedEmail(email);
+    if(!allowed){
+      certificateAccessError.textContent="This email address is not on the approved certificate list. Check the address or contact the program administrator.";
+      certificateAccessError.hidden=false;
+      participantEmail.focus();
+      return;
+    }
+
+    renderCertificate(name,currentCertificateOutcome,currentScorePercentage);
+  }catch(error){
+    console.error("Email authorization failed",error);
+    certificateAccessError.textContent="Certificate access could not be verified. Please reload the page and try again.";
+    certificateAccessError.hidden=false;
+  }finally{
+    certificateSubmitButton.disabled=false;
+    certificateSubmitButton.textContent=defaultButtonText;
   }
-
-  renderCertificate(name,currentCertificateOutcome,currentScorePercentage);
 }
 
 function resetAssessmentState(showIntro=true){
@@ -157,6 +201,9 @@ function resetAssessmentState(showIntro=true){
   currentCertificateOutcome=null;
   currentScorePercentage=0;
   participantName.value="";
+  participantEmail.value="";
+  certificateAccessError.hidden=true;
+  certificateAccessError.textContent="";
   feedback.hidden=true;
   feedback.textContent="";
   nextButton.disabled=true;

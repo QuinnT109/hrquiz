@@ -2,6 +2,7 @@ const questions=window.HRM_QUESTIONS||[];
 const caseStudies=window.HRM_CASE_STUDIES||{};
 const assessmentIntro=window.HRM_ASSESSMENT_INTRO||[];
 const sectionDescriptions=window.HRM_SECTION_DESCRIPTIONS||{};
+const allowedEmailHashes=window.HRM_ALLOWED_EMAIL_HASHES||[];
 const sectionOrder=[...new Set(questions.map(question=>question.section))];
 
 let currentQuestionIndex=0;
@@ -45,6 +46,8 @@ const resultSummary=document.getElementById("result-summary");
 const resultScore=document.getElementById("result-score");
 const certificateForm=document.getElementById("certificate-form");
 const participantName=document.getElementById("participant-name");
+const participantEmail=document.getElementById("participant-email");
+const certificateAccessError=document.getElementById("certificate-access-error");
 const participationRestartButton=document.getElementById("participation-restart-button");
 const certificateSubmitButton=document.getElementById("certificate-submit-button");
 const restartPanel=document.getElementById("restart-panel");
