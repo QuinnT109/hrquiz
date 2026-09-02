@@ -1,13 +1,22 @@
 const questions=window.HRM_QUESTIONS||[];
 const caseStudies=window.HRM_CASE_STUDIES||{};
+const sectionDescriptions=window.HRM_SECTION_DESCRIPTIONS||{};
+const sectionOrder=[...new Set(questions.map(question=>question.section))];
 let currentQuestionIndex=0;
 let currentQuestionAnsweredCorrectly=false;
+let pendingQuestionIndex=null;
 
 const quizScreen=document.getElementById("quiz-screen");
+const sectionScreen=document.getElementById("section-screen");
 const completionScreen=document.getElementById("completion-screen");
 const certificateScreen=document.getElementById("certificate-screen");
 const quizTitle=document.getElementById("quiz-title");
 const sectionLabel=document.getElementById("section-label");
+const sectionIntroKicker=document.getElementById("section-intro-kicker");
+const sectionIntroCount=document.getElementById("section-intro-count");
+const sectionIntroTitle=document.getElementById("section-intro-title");
+const sectionIntroDescription=document.getElementById("section-intro-description");
+const sectionContinueButton=document.getElementById("section-continue-button");
 const questionContext=document.getElementById("question-context");
 const contextTitle=document.getElementById("context-title");
 const contextText=document.getElementById("context-text");

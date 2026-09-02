@@ -9,6 +9,45 @@ function shuffleAnswers(question){
   return items;
 }
 
+function startsNewSection(questionIndex){
+  return questionIndex<questions.length-1&&questions[questionIndex].section!==questions[questionIndex+1].section;
+}
+
+function showSectionIntro(sectionName,questionIndex,isFirstSection=false){
+  pendingQuestionIndex=questionIndex;
+  currentQuestionAnsweredCorrectly=false;
+
+  quizScreen.hidden=true;
+  sectionScreen.hidden=false;
+  completionScreen.hidden=true;
+  certificateScreen.hidden=true;
+
+  const sectionIndex=sectionOrder.indexOf(sectionName);
+  const sectionNumber=sectionIndex>=0?sectionIndex+1:1;
+  const descriptions=sectionDescriptions[sectionName];
+  const paragraphs=Array.isArray(descriptions)?descriptions:[descriptions].filter(Boolean);
+
+  sectionIntroKicker.textContent=isFirstSection?"Section Overview":"Next Section";
+  sectionIntroCount.textContent=`${sectionNumber} / ${sectionOrder.length}`;
+  sectionIntroTitle.textContent=sectionName;
+  sectionIntroDescription.innerHTML="";
+
+  paragraphs.forEach(paragraphText=>{
+    const paragraph=document.createElement("p");
+    paragraph.textContent=paragraphText;
+    sectionIntroDescription.appendChild(paragraph);
+  });
+
+  if(paragraphs.length===0){
+    const paragraph=document.createElement("p");
+    paragraph.textContent="Continue when you are ready to begin this section.";
+    sectionIntroDescription.appendChild(paragraph);
+  }
+
+  sectionContinueButton.textContent=isFirstSection?"Begin Assessment":"Begin Section";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
 function initializeQuiz(){
   document.title="HRM Session Final Assessment";
   if(quizTitle)quizTitle.textContent="HRM Session Final Assessment";
@@ -21,16 +60,23 @@ function initializeQuiz(){
   }
 
   if(questions.length===0){
+    quizScreen.hidden=false;
+    sectionScreen.hidden=true;
     questionText.textContent="Questions could not be loaded. Please refresh the page.";
     return;
   }
 
-  showQuestion();
+  showSectionIntro(questions[0].section,0,true);
 }
 
 function showQuestion(){
   currentQuestionAnsweredCorrectly=false;
   const question=questions[currentQuestionIndex];
+
+  sectionScreen.hidden=true;
+  quizScreen.hidden=false;
+  completionScreen.hidden=true;
+  certificateScreen.hidden=true;
 
   currentQuestionNumber.textContent=currentQuestionIndex+1;
   questionText.textContent=question.question;
@@ -55,7 +101,14 @@ function showQuestion(){
   feedback.textContent="";
   feedback.className="feedback";
   nextButton.disabled=true;
-  nextButton.textContent=currentQuestionIndex===questions.length-1?"Finish Assessment":"Next Question";
+
+  if(currentQuestionIndex===questions.length-1){
+    nextButton.textContent="Finish Assessment";
+  }else if(startsNewSection(currentQuestionIndex)){
+    nextButton.textContent="Next Section";
+  }else{
+    nextButton.textContent="Next Question";
+  }
 
   const displayedAnswers=shuffleAnswers(question);
 
