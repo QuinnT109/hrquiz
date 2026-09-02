@@ -54,6 +54,12 @@ function formatPercentage(value){
   return Number.isInteger(value)?`${value}%`:`${value.toFixed(1)}%`;
 }
 
+function clearCertificateAccessError(){
+  certificateAccessError.hidden=true;
+  certificateAccessError.textContent="";
+  participantEmail.removeAttribute("aria-invalid");
+}
+
 function showResultScreen(){
   currentScorePercentage=calculateScorePercentage();
   currentCertificateOutcome=determineOutcome();
@@ -69,8 +75,7 @@ function showResultScreen(){
   restartPanel.hidden=true;
   participantName.value="";
   participantEmail.value="";
-  certificateAccessError.hidden=true;
-  certificateAccessError.textContent="";
+  clearCertificateAccessError();
 
   if(currentCertificateOutcome==="completion"){
     completionIcon.textContent="✓";
@@ -142,13 +147,16 @@ function normalizeEmail(email){
 }
 
 async function sha256Hex(value){
+  if(!window.isSecureContext||!globalThis.crypto||!crypto.subtle){
+    throw new Error("Secure email verification is unavailable.");
+  }
+
   const encoded=new TextEncoder().encode(value);
   const digest=await crypto.subtle.digest("SHA-256",encoded);
   return Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,"0")).join("");
 }
 
 async function isWhitelistedEmail(email){
-  if(!window.isSecureContext||!crypto.subtle)return false;
   if(!Array.isArray(allowedEmailHashes)||allowedEmailHashes.length===0)return false;
   const emailHash=await sha256Hex(normalizeEmail(email));
   return allowedEmailHashes.includes(emailHash);
@@ -156,8 +164,7 @@ async function isWhitelistedEmail(email){
 
 async function generateCertificate(event){
   event.preventDefault();
-  certificateAccessError.hidden=true;
-  certificateAccessError.textContent="";
+  clearCertificateAccessError();
 
   if(!certificateForm.reportValidity())return;
 
@@ -175,6 +182,7 @@ async function generateCertificate(event){
     if(!allowed){
       certificateAccessError.textContent="Email not found.";
       certificateAccessError.hidden=false;
+      participantEmail.setAttribute("aria-invalid","true");
       participantEmail.focus();
       return;
     }
@@ -184,6 +192,7 @@ async function generateCertificate(event){
     console.error("Email authorization failed",error);
     certificateAccessError.textContent="Certificate access could not be verified. Please reload the page and try again.";
     certificateAccessError.hidden=false;
+    participantEmail.setAttribute("aria-invalid","true");
   }finally{
     certificateSubmitButton.disabled=false;
     certificateSubmitButton.textContent=defaultButtonText;
@@ -202,8 +211,7 @@ function resetAssessmentState(showIntro=true){
   currentScorePercentage=0;
   participantName.value="";
   participantEmail.value="";
-  certificateAccessError.hidden=true;
-  certificateAccessError.textContent="";
+  clearCertificateAccessError();
   feedback.hidden=true;
   feedback.textContent="";
   nextButton.disabled=true;
@@ -226,6 +234,7 @@ function handleCertificateTestShortcut(){
 nextButton.addEventListener("click",goToNextQuestion);
 sectionContinueButton.addEventListener("click",beginPendingSection);
 certificateForm.addEventListener("submit",generateCertificate);
+participantEmail.addEventListener("input",clearCertificateAccessError);
 restartAssessmentButton.addEventListener("click",()=>resetAssessmentState(true));
 participationRestartButton.addEventListener("click",()=>resetAssessmentState(true));
 certificateRestartButton.addEventListener("click",()=>resetAssessmentState(true));
