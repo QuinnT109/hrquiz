@@ -173,7 +173,7 @@ async function generateCertificate(event){
   try{
     const allowed=await isWhitelistedEmail(email);
     if(!allowed){
-      certificateAccessError.textContent="This email address is not on the approved certificate list. Check the address or contact the program administrator.";
+      certificateAccessError.textContent="Email not found.";
       certificateAccessError.hidden=false;
       participantEmail.focus();
       return;
