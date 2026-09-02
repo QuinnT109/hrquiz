@@ -21,7 +21,7 @@
   width: 42%;
   height: 80%;
   overflow: hidden;
-  opacity: 0.035;
+  opacity: 0.04;
   transform: translate(-50%, -50%);
   pointer-events: none;
   user-select: none;
@@ -35,12 +35,16 @@
   width: auto;
   max-width: none;
   height: 100%;
+  background: transparent;
+  mix-blend-mode: multiply;
 }
 
 .certificate-brand-logo {
   width: clamp(150px, 22vw, 240px);
   max-width: 38%;
   margin: 0 auto 4px;
+  background: transparent;
+  mix-blend-mode: multiply;
 }
 
 .certificate-program-title {
@@ -114,7 +118,7 @@
     width: 42% !important;
     height: 80% !important;
     overflow: hidden !important;
-    opacity: 0.035 !important;
+    opacity: 0.04 !important;
     transform: translate(-50%, -50%) !important;
     display: block !important;
   }
@@ -126,12 +130,16 @@
     width: auto !important;
     max-width: none !important;
     height: 100% !important;
+    background: transparent !important;
+    mix-blend-mode: multiply !important;
   }
 
   #certificate .certificate-brand-logo {
     width: 135pt !important;
     max-width: 32% !important;
     margin: 0 auto 2pt !important;
+    background: transparent !important;
+    mix-blend-mode: multiply !important;
   }
 
   #certificate .certificate-program-title {
