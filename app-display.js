@@ -13,23 +13,8 @@ function startsNewSection(questionIndex){
   return questionIndex<questions.length-1&&questions[questionIndex].section!==questions[questionIndex+1].section;
 }
 
-function showSectionIntro(sectionName,questionIndex,isFirstSection=false){
-  pendingQuestionIndex=questionIndex;
-  currentQuestionAnsweredCorrectly=false;
-
-  quizScreen.hidden=true;
-  sectionScreen.hidden=false;
-  completionScreen.hidden=true;
-  certificateScreen.hidden=true;
-
-  const sectionIndex=sectionOrder.indexOf(sectionName);
-  const sectionNumber=sectionIndex>=0?sectionIndex+1:1;
-  const descriptions=sectionDescriptions[sectionName];
+function renderIntroParagraphs(descriptions){
   const paragraphs=Array.isArray(descriptions)?descriptions:[descriptions].filter(Boolean);
-
-  sectionIntroKicker.textContent=isFirstSection?"Section Overview":"Next Section";
-  sectionIntroCount.textContent=`${sectionNumber} / ${sectionOrder.length}`;
-  sectionIntroTitle.textContent=sectionName;
   sectionIntroDescription.innerHTML="";
 
   paragraphs.forEach(paragraphText=>{
@@ -40,11 +25,50 @@ function showSectionIntro(sectionName,questionIndex,isFirstSection=false){
 
   if(paragraphs.length===0){
     const paragraph=document.createElement("p");
-    paragraph.textContent="Continue when you are ready to begin this section.";
+    paragraph.textContent="Continue when you are ready.";
     sectionIntroDescription.appendChild(paragraph);
   }
+}
 
+function showAssessmentIntro(){
+  pendingQuestionIndex=0;
+  assessmentIntroActive=true;
+  currentQuestionAnsweredCorrectly=false;
+
+  quizScreen.hidden=true;
+  sectionScreen.hidden=false;
+  completionScreen.hidden=true;
+  certificateScreen.hidden=true;
+
+  sectionIntroKicker.textContent="Assessment Overview";
+  sectionIntroCount.textContent=`${questions.length} Questions`;
+  sectionIntroTitle.textContent="HRM Session Completion – Final Assessment";
+  renderIntroParagraphs(assessmentIntro);
+  sectionContinueButton.textContent="Continue to Section 1";
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function showSectionIntro(sectionName,questionIndex,isFirstSection=false){
+  pendingQuestionIndex=questionIndex;
+  assessmentIntroActive=false;
+  currentQuestionAnsweredCorrectly=false;
+
+  quizScreen.hidden=true;
+  sectionScreen.hidden=false;
+  completionScreen.hidden=true;
+  certificateScreen.hidden=true;
+
+  const sectionIndex=sectionOrder.indexOf(sectionName);
+  const sectionNumber=sectionIndex>=0?sectionIndex+1:1;
+  const descriptions=sectionDescriptions[sectionName];
+
+  sectionIntroKicker.textContent=isFirstSection?"Section Overview":"Next Section";
+  sectionIntroCount.textContent=`${sectionNumber} / ${sectionOrder.length}`;
+  sectionIntroTitle.textContent=sectionName;
+  renderIntroParagraphs(descriptions);
   sectionContinueButton.textContent=isFirstSection?"Begin Assessment":"Begin Section";
+
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
@@ -66,10 +90,11 @@ function initializeQuiz(){
     return;
   }
 
-  showSectionIntro(questions[0].section,0,true);
+  showAssessmentIntro();
 }
 
 function showQuestion(){
+  assessmentIntroActive=false;
   currentQuestionAnsweredCorrectly=false;
   const question=questions[currentQuestionIndex];
 
