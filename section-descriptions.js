@@ -1,3 +1,10 @@
+window.HRM_ASSESSMENT_INTRO=Object.freeze([
+  "We have covered the four HRM sessions. The questions below deliberately test understanding, application, managerial judgment, and case analysis based on the learning from the HRM sessions.",
+  "The source material emphasizes structured performance management, evidence-based hiring, onboarding as a journey, respectful offboarding, managers as the first HR, policy/process gap identification, compliance planning, employee surveys and HR analytics.",
+  "This assessment consists of 45 multiple-choice questions, including practical scenario- and case-based questions designed to assess your understanding and application of key HR and people-management concepts.",
+  "Take your time, read each question carefully, and select the answer that best reflects your understanding and professional judgment. Good luck!"
+]);
+
 window.HRM_SECTION_DESCRIPTIONS=Object.freeze({
   "Performance Management & Appraisal":[
     "Performance Management & Appraisal is a continuous process of aligning individual performance with organizational goals through clear expectations, measurable objectives, regular monitoring, ongoing feedback, coaching, recognition, and employee development.",
