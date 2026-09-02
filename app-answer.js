@@ -1,23 +1,45 @@
-function checkAnswer(selectedButton,selectedOriginalIndex){
-  if(currentQuestionAnsweredCorrectly)return;
-
-  const question=questions[currentQuestionIndex];
+function resolveQuestion(wasCorrect,selectedButton){
   const buttons=answerOptions.querySelectorAll(".answer-button");
-  buttons.forEach(button=>button.classList.remove("incorrect"));
+  currentQuestionResolved=true;
+  questionResults[currentQuestionIndex]=wasCorrect;
 
-  if(selectedOriginalIndex===question.correctAnswer){
-    currentQuestionAnsweredCorrectly=true;
+  if(wasCorrect){
+    correctAnswerCount+=1;
     selectedButton.classList.add("correct");
     feedback.textContent="Correct. You can continue.";
     feedback.className="feedback correct-feedback";
-    feedback.hidden=false;
-    nextButton.disabled=false;
-    buttons.forEach(button=>{button.disabled=true;});
   }else{
     selectedButton.classList.add("incorrect");
+    feedback.textContent="Incorrect.";
+    feedback.className="feedback incorrect-feedback";
+  }
+
+  feedback.hidden=false;
+  nextButton.disabled=false;
+  buttons.forEach(button=>{button.disabled=true;});
+}
+
+function checkAnswer(selectedButton,selectedOriginalIndex){
+  if(currentQuestionResolved)return;
+
+  const question=questions[currentQuestionIndex];
+  currentQuestionAttempts+=1;
+
+  if(selectedOriginalIndex===question.correctAnswer){
+    resolveQuestion(true,selectedButton);
+    return;
+  }
+
+  selectedButton.classList.add("incorrect");
+
+  if(currentQuestionAttempts===1){
+    selectedButton.disabled=true;
     feedback.textContent="Incorrect. Try again.";
     feedback.className="feedback incorrect-feedback";
     feedback.hidden=false;
     nextButton.disabled=true;
+    return;
   }
+
+  resolveQuestion(false,selectedButton);
 }

@@ -33,7 +33,7 @@ function renderIntroParagraphs(descriptions){
 function showAssessmentIntro(){
   pendingQuestionIndex=0;
   assessmentIntroActive=true;
-  currentQuestionAnsweredCorrectly=false;
+  currentQuestionResolved=false;
 
   quizScreen.hidden=true;
   sectionScreen.hidden=false;
@@ -52,7 +52,7 @@ function showAssessmentIntro(){
 function showSectionIntro(sectionName,questionIndex,isFirstSection=false){
   pendingQuestionIndex=questionIndex;
   assessmentIntroActive=false;
-  currentQuestionAnsweredCorrectly=false;
+  currentQuestionResolved=false;
 
   quizScreen.hidden=true;
   sectionScreen.hidden=false;
@@ -61,12 +61,11 @@ function showSectionIntro(sectionName,questionIndex,isFirstSection=false){
 
   const sectionIndex=sectionOrder.indexOf(sectionName);
   const sectionNumber=sectionIndex>=0?sectionIndex+1:1;
-  const descriptions=sectionDescriptions[sectionName];
 
   sectionIntroKicker.textContent=isFirstSection?"Section Overview":"Next Section";
   sectionIntroCount.textContent=`${sectionNumber} / ${sectionOrder.length}`;
   sectionIntroTitle.textContent=sectionName;
-  renderIntroParagraphs(descriptions);
+  renderIntroParagraphs(sectionDescriptions[sectionName]);
   sectionContinueButton.textContent=isFirstSection?"Begin Assessment":"Begin Section";
 
   window.scrollTo({top:0,behavior:"smooth"});
@@ -77,11 +76,7 @@ function initializeQuiz(){
   if(quizTitle)quizTitle.textContent="HRM Session Final Assessment";
   if(certificateCourseTitle)certificateCourseTitle.textContent="HRM Session Completion – Final Assessment";
   totalQuestionCount.textContent=questions.length;
-  certificateScore.textContent=`${questions.length} of ${questions.length} Questions Completed`;
-
-  if(completionDescription){
-    completionDescription.textContent=`You completed all ${questions.length} questions. Enter your full name below to generate your certificate of completion.`;
-  }
+  resetAssessmentState(false);
 
   if(questions.length===0){
     quizScreen.hidden=false;
@@ -95,7 +90,8 @@ function initializeQuiz(){
 
 function showQuestion(){
   assessmentIntroActive=false;
-  currentQuestionAnsweredCorrectly=false;
+  currentQuestionResolved=false;
+  currentQuestionAttempts=0;
   const question=questions[currentQuestionIndex];
 
   sectionScreen.hidden=true;
@@ -104,6 +100,7 @@ function showQuestion(){
   certificateScreen.hidden=true;
 
   currentQuestionNumber.textContent=currentQuestionIndex+1;
+  questionCounterTrigger.setAttribute("aria-label",`Question ${currentQuestionIndex+1} of ${questions.length}`);
   questionText.textContent=question.question;
   if(sectionLabel)sectionLabel.textContent=question.section;
 
