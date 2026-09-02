@@ -123,8 +123,8 @@ function renderCertificate(name,outcome,scorePercentage=null){
 
   certificateHeading.textContent=isCompletion?"Certificate of Completion":"Certificate of Participation";
   certificateCopy.textContent=isCompletion
-    ?"for successful completion of the Human Resources Management Sessions and the"
-    :"for successful participation in the Human Resources Management Sessions and the";
+    ?"For successful completion of the Human Resources Management Sessions"
+    :"For successful participation in the Human Resources Management Sessions";
   certificateName.textContent=name;
   certificateDate.textContent=new Date().toLocaleDateString("en-GB",{
     year:"numeric",
